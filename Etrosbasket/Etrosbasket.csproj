@@ -8,6 +8,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\images\aleko-svishtov-300x300.png" />
+    <None Include="wwwroot\images\alekoSvishtov-Etros-768x512.jpg" />
+    <None Include="wwwroot\images\chardafon-Etros-768x512.jpg" />
+    <None Include="wwwroot\images\dimitar-balakov-300x300.png" />
+    <None Include="wwwroot\images\dimitar-mangov-300x300.png" />
+    <None Include="wwwroot\images\dimitar-rachev-300x300.png" />
+    <None Include="wwwroot\images\dunav-ruse-300x300.png" />
+    <None Include="wwwroot\images\dzhen-day-300x300.png" />
+    <None Include="wwwroot\images\etros-150x150.png" />
+    <None Include="wwwroot\images\favicon-32x32.png" />
+    <None Include="wwwroot\images\favicon.ico" />
+    <None Include="wwwroot\images\hero_background.jpg" />
+    <None Include="wwwroot\images\ivan_balakov.jpg" />
+    <None Include="wwwroot\images\yosif-omar-300x300.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.10" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.10" />
