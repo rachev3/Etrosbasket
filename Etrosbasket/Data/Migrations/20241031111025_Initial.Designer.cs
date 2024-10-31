@@ -4,6 +4,7 @@ using Etrosbasket.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Etrosbasket.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241031111025_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,112 +24,6 @@ namespace Etrosbasket.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Etrosbasket.Models.Player", b =>
-                {
-                    b.Property<int>("PlayerId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerId"));
-
-                    b.Property<string>("BornYear")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Height")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Weight")
-                        .HasColumnType("float");
-
-                    b.HasKey("PlayerId");
-
-                    b.ToTable("Players");
-                });
-
-            modelBuilder.Entity("Etrosbasket.Models.PlayerStatistic", b =>
-                {
-                    b.Property<int>("StatisticId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StatisticId"));
-
-                    b.Property<int>("Assists")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Blocks")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DeffensiveRebounds")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Efficiency")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FaulDrawned")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FreeThrows_Attempted")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FreeThrows_Made")
-                        .HasColumnType("int");
-
-                    b.Property<TimeSpan>("Minutes")
-                        .HasColumnType("time");
-
-                    b.Property<int>("OffensiveRebounds")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PersonalFaul")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlayerId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PlusMinus")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Steals")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TeamAgainst")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ThreePoints_Attempted")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ThreePoints_Made")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Turnovers")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TwoPoints_Attempted")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TwoPoints_Made")
-                        .HasColumnType("int");
-
-                    b.HasKey("StatisticId");
-
-                    b.HasIndex("PlayerId");
-
-                    b.ToTable("PlayerStatistics");
-                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -330,17 +227,6 @@ namespace Etrosbasket.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Etrosbasket.Models.PlayerStatistic", b =>
-                {
-                    b.HasOne("Etrosbasket.Models.Player", "Player")
-                        .WithMany("Statistics")
-                        .HasForeignKey("PlayerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Player");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -390,11 +276,6 @@ namespace Etrosbasket.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Etrosbasket.Models.Player", b =>
-                {
-                    b.Navigation("Statistics");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,0 +1,91 @@
+﻿@model Etrosbasket.Models.Player
+
+<div class="d-flex justify-content-between">
+    <!-- Player Picture -->
+    <div class="me-3">
+        <img src="~/images/dimitar-rachev-300x300.png" alt="Player Picture" class="img-thumbnail" style="width: 150px; height: auto;">
+    </div>
+
+    <!-- Player Characteristics -->
+    <div>
+        <h4>@Model.Name</h4>
+        <p><strong>Born Year:</strong> @Model.BornYear</p>
+        <p><strong>Weight:</strong> @Model.Weight kg</p>
+        <p><strong>Height:</strong> @Model.Height cm</p>
+        <!-- Add more characteristics if necessary -->
+    </div>
+</div>
+
+<!-- Player Statistics -->
+<div class="table-responsive">
+    <table class="table table-sm table-bordered text-center" style="font-size: 0.8rem;">
+        <thead class="bg-primary text-warning">
+            <tr>
+                <th rowspan="2" class="align-middle p-1" style="width: 10%;">Срещу</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">Мин</th>
+                <th colspan="2" class="p-1" style="width: 8%;">Игрови изтрели</th>
+                <th colspan="2" class="p-1" style="width: 8%;">2 Точки</th>
+                <th colspan="2" class="p-1" style="width: 8%;">3 Точки</th>
+                <th colspan="2" class="p-1" style="width: 8%;">Наказателни удари</th>
+                <th colspan="3" class="p-1" style="width: 10%;">Борби</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">АС</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">ГР</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">ОТ</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">ЧА</th>
+                <th colspan="2" class="p-1" style="width: 8%;">Фалове</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">+/-</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">К</th>
+                <th rowspan="2" class="align-middle p-1" style="width: 5%;">Т</th>
+            </tr>
+            <tr>
+                <th class="p-1">У/О</th>
+                <th class="p-1">%</th>
+                <th class="p-1">У/О</th>
+                <th class="p-1">%</th>
+                <th class="p-1">У/О</th>
+                <th class="p-1">%</th>
+                <th class="p-1">У/О</th>
+                <th class="p-1">%</th>
+                <th class="p-1">БН</th>
+                <th class="p-1">БЗ</th>
+                <th class="p-1">Б</th>
+                <th class="p-1">ФИ</th>
+                <th class="p-1">ФП</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var statistic in Model.Statistics)
+            {
+                <tr class="table-secondary">
+                    <td class="p-1">@statistic.TeamAgainst <br /> @statistic.Date.ToShortDateString()</td>
+                    <td class="p-1">@statistic.Minutes</td>
+                    <td class="p-1">@statistic.FieldGoals_Made/@statistic.FieldGoals_Attempted</td>
+                    <td class="p-1">@string.Format("{0:0.0}%", statistic.FieldGooalsPercentage)</td>
+                    <td class="p-1">@statistic.TwoPoints_Made/@statistic.TwoPoints_Attempted</td>
+                    <td class="p-1">@string.Format("{0:0.0}%", statistic.TwoPointsPercentage)</td>
+                    <td class="p-1">@statistic.ThreePoints_Made/@statistic.ThreePoints_Attempted</td>
+                    <td class="p-1">@string.Format("{0:0.0}%", statistic.ThreePointsPercentage)</td>
+                    <td class="p-1">@statistic.FreeThrows_Made/@statistic.FreeThrows_Attempted</td>
+                    <td class="p-1">@string.Format("{0:0.0}%", statistic.FreeThrowsPercentage)</td>
+                    <td class="p-1">@statistic.OffensiveRebounds</td>
+                    <td class="p-1">@statistic.DeffensiveRebounds</td>
+                    <td class="p-1">@statistic.TotalRebounds</td>
+                    <td class="p-1">@statistic.Assists</td>
+                    <td class="p-1">@statistic.Turnovers</td>
+                    <td class="p-1">@statistic.Steals</td>
+                    <td class="p-1">@statistic.Blocks</td>
+                    <td class="p-1">@statistic.PersonalFaul</td>
+                    <td class="p-1">@statistic.FaulDrawned</td>
+                    <td class="p-1">@statistic.PlusMinus</td>
+                    <td class="p-1">@statistic.Efficiency</td>
+                    <td class="p-1">@statistic.Points</td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+
+
+
+
