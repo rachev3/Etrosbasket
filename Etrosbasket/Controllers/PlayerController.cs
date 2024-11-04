@@ -1,4 +1,5 @@
 ﻿using Etrosbasket.Data.Services;
+using Etrosbasket.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,21 @@ namespace Etrosbasket.Controllers
 
             return PartialView("~/Views/AdminPanel/_Players.cshtml", players);
         }
+        public IActionResult Create()
+        {
+
+            return PartialView("~/Views/AdminPanel/_CreatePlayer.cshtml");
+        }
+        public async Task<IActionResult> CreateSubmit(Player player)
+        {
+            if (ModelState.IsValid)
+            {
+               await playerService.Add(player);
+   
+            }
+            return RedirectToAction("Players");
+        }
+
         public async Task<IActionResult> Details(int playerId)
         {
          

@@ -2,7 +2,8 @@
 
 <h3>Players List</h3>
 <!-- Button to open the Create Player modal -->
-<button class="btn btn-success mb-3" id="createPlayerBtn">Create New Player</button>
+<button type="button" class="btn btn-success" id="createPlayerButton">Add New Player</button>
+
 
 <table class="table table-striped">
     <thead>
@@ -31,6 +32,12 @@
 
                     <!-- Delete button -->
                     <a class="btn btn-danger btn-sm delete-player" data-player-id="@player.PlayerId">Delete</a>
+                    <button class="btn btn-secondary btn-sm upload-pdf-button" data-player-id="@player.PlayerId">Upload PDF</button>
+
+                    <form id="pdfUploadForm-@player.PlayerId" class="pdf-upload-form d-none" enctype="multipart/form-data" method="post" action="/Player/ParseStatisticsPdf">
+                        <input type="file" id="statisticPdf" name="statisticPdf" accept="application/pdf" required style="display: none;">
+                        <input type="hidden" name="playerId" value="@player.PlayerId">
+                    </form>
                 </td>
             </tr>
         }
@@ -50,6 +57,22 @@
         </div>
     </div>
 </div>
+
+<!-- Create Player Modal Structure -->
+<div class="modal fade" id="createPlayerModal" tabindex="-1" aria-labelledby="createPlayerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createPlayerLabel">Create New Player</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="createModalContent">
+                <!-- Form for creating a player will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 
