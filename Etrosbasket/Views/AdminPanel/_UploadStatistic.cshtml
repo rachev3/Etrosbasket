@@ -1,0 +1,20 @@
+﻿
+<form id="fileUploadForm" enctype="multipart/form-data">
+    <div class="d-flex justify-content-between mb-3">
+        <input type="file" id="fileInput" name="statisticPdf" accept="application/pdf" style="display: none;">
+
+        <!-- Button to select a file -->
+        <button type="button" class="btn btn-primary" id="selectFileButton">Select File</button>
+
+        <!-- Button to discard selected file -->
+        <button type="button" class="btn btn-secondary" id="discardFileButton">Discard File</button>
+
+        <!-- Button to upload the file -->
+        <button type="submit" class="btn btn-success" id="uploadFileButton">Upload</button>
+    </div>
+
+    <!-- File Preview Area -->
+    <div id="filePreview" style="border: 1px solid #ddd; padding: 10px; height: 400px; overflow-y: auto;">
+        <p>No file selected.</p>
+    </div>
+</form>

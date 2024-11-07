@@ -31,13 +31,9 @@
                     <button class="btn btn-primary btn-sm edit-player" data-id="">Edit</button>
 
                     <!-- Delete button -->
-                    <a class="btn btn-danger btn-sm delete-player" data-player-id="@player.PlayerId">Delete</a>
+                    <a class="btn btn-danger btn-sm delete-player"  data-player-id="@player.PlayerId">Delete</a>
                     <button class="btn btn-secondary btn-sm upload-pdf-button" data-player-id="@player.PlayerId">Upload PDF</button>
 
-                    <form id="pdfUploadForm-@player.PlayerId" class="pdf-upload-form d-none" enctype="multipart/form-data" method="post" action="/Player/ParseStatisticsPdf">
-                        <input type="file" id="statisticPdf" name="statisticPdf" accept="application/pdf" required style="display: none;">
-                        <input type="hidden" name="playerId" value="@player.PlayerId">
-                    </form>
                 </td>
             </tr>
         }
@@ -72,6 +68,22 @@
         </div>
     </div>
 </div>
+
+<!-- Upload File Modal Structure in _Players -->
+<div class="modal fade" id="uploadFileModal" tabindex="-1" aria-labelledby="uploadFileLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="uploadFileLabel">Upload Player Statistics PDF</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="uploadModalContent" style="max-height: 75vh; overflow-y: auto;">
+                <!-- Content for file upload will load here dynamically from a partial view -->
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 

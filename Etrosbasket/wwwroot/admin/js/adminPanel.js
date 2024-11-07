@@ -1,4 +1,55 @@
-﻿// showing all players
+﻿// pdf uploading logic
+$(document).ready(function () {
+    // Delegate events to document to ensure they work with dynamically loaded content
+    $(document).on('click', '#selectFileButton', function () {
+        $('#fileInput').click();
+    });
+
+    // Show preview when a file is selected
+    $(document).on('change', '#fileInput', function () {
+        var file = this.files[0];
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#filePreview').html(`<embed src="${e.target.result}" type="application/pdf" width="100%" height="100%">`);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            $('#filePreview').html('<p>No file selected.</p>');
+        }
+    });
+
+    // Discard selected file
+    $(document).on('click', '#discardFileButton', function () {
+        $('#fileInput').val(''); // Clear file input
+        $('#filePreview').html('<p>No file selected.</p>'); // Reset preview
+    });
+
+    // Handle form submission with AJAX
+    $(document).on('submit', '#fileUploadForm', function (e) {
+        e.preventDefault();
+        var formData = new FormData(this);
+
+        $.ajax({
+            url: '/Player/UploadStatistic',
+            type: 'POST',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                alert("File uploaded successfully!");
+                $('#uploadFileModal').modal('hide'); // Hide the modal on success
+                // Optionally, reload data or update UI here
+            },
+            error: function (xhr, status, error) {
+                console.error("Error uploading file:", error);
+            }
+        });
+    });
+});
+
+
+// showing all players
 $(document).ready(function () {
     $('#playersLink').on('click', function (e) {
         e.preventDefault();
@@ -84,6 +135,25 @@ $(document).on('submit', '#createPlayerForm', function (e) {
         }
     });
 });
+
+// statistic upload modal 
+$(document).on('click', '.upload-pdf-button', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: '/Player/LoadUploadModalContent', // Controller action to load the partial view
+        type: 'GET',
+        success: function (response) {
+            $('#uploadModalContent').html(response); // Load partial view content into modal
+            $('#uploadFileModal').modal('show'); // Show the modal
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading upload modal content:", error);
+        }
+    });
+});
+
+
 
 
 
