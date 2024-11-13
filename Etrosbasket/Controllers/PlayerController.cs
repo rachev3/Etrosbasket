@@ -1,7 +1,8 @@
 ﻿using Etrosbasket.Data.Services;
 using Etrosbasket.Models;
-using iTextSharp.text.pdf.parser;
-using iTextSharp.text.pdf;
+using iText.Kernel.Pdf;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -32,8 +33,10 @@ namespace Etrosbasket.Controllers
 
             return PartialView("~/Views/AdminPanel/_CreatePlayer.cshtml");
         }
-        public IActionResult LoadUploadModalContent()
+        public IActionResult  LoadUploadModalContent(int playerId, string playerName)
         {
+            ViewBag.playerId = playerId;
+            ViewBag.playerName = playerName;
             return PartialView("~/Views/AdminPanel/_UploadStatistic.cshtml");
         }
 
@@ -41,15 +44,15 @@ namespace Etrosbasket.Controllers
         {
             if (ModelState.IsValid)
             {
-               await playerService.Add(player);
-   
+                await playerService.Add(player);
+
             }
             return RedirectToAction("Players");
         }
 
         public async Task<IActionResult> Details(int playerId)
         {
-         
+
             var player = await playerService.GetById(playerId);
 
             if (player == null)
@@ -57,7 +60,7 @@ namespace Etrosbasket.Controllers
                 return NotFound();
             }
 
-            return PartialView("~/Views/AdminPanel/_PlayerDetails.cshtml", player); 
+            return PartialView("~/Views/AdminPanel/_PlayerDetails.cshtml", player);
         }
 
         public async Task<IActionResult> Delete(int playerId)
@@ -65,8 +68,9 @@ namespace Etrosbasket.Controllers
             await playerService.Delete(playerId);
             return RedirectToAction("Players");
         }
-        public async Task<IActionResult> UploadStatistic(IFormFile statisticPdf)
+        public async Task<IActionResult> UploadStatistic(IFormFile statisticPdf, int playerId, string playerName)
         {
+            
             if (statisticPdf == null || statisticPdf.Length == 0)
             {
                 return BadRequest("Invalid PDF file.");
@@ -74,75 +78,79 @@ namespace Etrosbasket.Controllers
 
             using (var stream = new MemoryStream())
             {
-                statisticPdf.CopyTo(stream);
+                await statisticPdf.CopyToAsync(stream);
                 stream.Position = 0;
 
-                // Extract text from PDF
-                string pdfText = ExtractTextFromPdf(stream);
+                // Extract lines from PDF
+                var lines = ExtractLinesFromPdf(stream);
 
                 // Parse player statistics
-                var playerStatistics = ParsePlayerStatisticsPdf(pdfText);
+                var playerStatistics = ParsePlayerStatistics(lines,playerId,playerName);
 
-                // You can now save each PlayerStatistic to the database, or display them
+                // Display or save player statistics
                 return View("StatisticsSummary", playerStatistics);
             }
         }
 
-        public string ExtractTextFromPdf(Stream pdfStream)
+        public List<string> ExtractLinesFromPdf(Stream pdfStream)
         {
-            using (PdfReader reader = new PdfReader(pdfStream))
+            var lines = new List<string>();
+
+            using (var reader = new PdfReader(pdfStream))
+            using (var pdfDoc = new PdfDocument(reader))
             {
-                StringBuilder text = new StringBuilder();
-                for (int i = 1; i <= reader.NumberOfPages; i++)
+                for (int i = 1; i <= pdfDoc.GetNumberOfPages(); i++)
                 {
-                    text.Append(PdfTextExtractor.GetTextFromPage(reader, i));
+                    var strategy = new LocationTextExtractionStrategy();
+                    var pageText = PdfTextExtractor.GetTextFromPage(pdfDoc.GetPage(i), strategy);
+
+                    // Split text into lines
+                    lines.AddRange(pageText.Split('\n'));
                 }
-                return text.ToString();
             }
+
+            return lines;
         }
-        public List<PlayerStatistic> ParsePlayerStatisticsPdf(string pdfText)
+
+        public PlayerStatistic ParsePlayerStatistics(List<string> lines, int playerId, string playerName)
         {
-            var playerStatistics = new List<PlayerStatistic>();
+            var playerStatistic = new PlayerStatistic();
 
-            // Regex pattern to match each player's statistics line
-            var playerPattern = new Regex(@"(\d+)\s+([^\d]+?)\s+(\d{1,2}:\d{2})\s+(\d+/\d+)\s+([\d,]+)\s+(\d+/\d+)\s+([\d,]+)\s+(\d+/\d+)\s+([\d,]+)\s+(\d+/\d+)\s+([\d,]+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(-?\d+)\s+(\d+)\s+(\d+)");
-
-            foreach (Match match in playerPattern.Matches(pdfText))
+               playerStatistic.TeamAgainst = lines[5].Contains("Етрос") ? lines[5].Replace("Етрос", "").Trim().Split(' ')[0] : lines[5].Split(' ')[0]; 
+               playerStatistic.Date = DateTime.ParseExact(lines[2].Split(',')[1].Trim().Split("Start time:")[0].Trim(), "ddd dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture);          // To do: extract the date
+               playerStatistic.PlayerId = playerId;
+            foreach (var line in lines)
             {
-                var statistic = new PlayerStatistic();
+                if (line.ToLower().Contains(playerName.ToLower()))
+                {
+                    var columns = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    playerStatistic.Minutes = TimeSpan.ParseExact(columns[3], "mm\\:ss", null); 
+                    playerStatistic.TwoPoints_Made = int.Parse(columns[6].Split('/')[0]); 
+                    playerStatistic.TwoPoints_Attempted = int.Parse(columns[6].Split('/')[1]); 
+                    playerStatistic.ThreePoints_Made = int.Parse(columns[8].Split('/')[0]);   
+                    playerStatistic.ThreePoints_Attempted = int.Parse(columns[8].Split('/')[1]); 
+                    playerStatistic.FreeThrows_Made = int.Parse(columns[10].Split('/')[0]); 
+                    playerStatistic.FreeThrows_Attempted = int.Parse(columns[10].Split('/')[1]);   
+                    playerStatistic.OffensiveRebounds = int.Parse(columns[12]);
+                    playerStatistic.DeffensiveRebounds = int.Parse(columns[13]);
+                    playerStatistic.Assists = int.Parse(columns[15]);
+                    playerStatistic.Turnovers = int.Parse(columns[16]);
+                    playerStatistic.Steals = int.Parse(columns[17]);
+                    playerStatistic.Blocks = int.Parse(columns[18]);
+                    playerStatistic.PersonalFaul = int.Parse(columns[19]);
+                    playerStatistic.FaulDrawned = int.Parse(columns[20]);
+                    playerStatistic.PlusMinus = int.Parse(columns[21]);
+                    playerStatistic.Efficiency = int.Parse(columns[22]);
+                    playerStatistic.Points = int.Parse(columns[23]);
 
-                // Parsing fields from regex groups, ensure each group matches model property
-                statistic.TeamAgainst = "Opponent Team Name"; // Set this based on context if available
-                statistic.Date = DateTime.Parse("2024-10-05"); // Set the game date
-                statistic.Minutes = TimeSpan.Parse(match.Groups[2].Value);
+                }
 
-                // Field Goals
-                statistic.TwoPoints_Made = int.Parse(match.Groups[5].Value.Split('/')[0]);
-                statistic.TwoPoints_Attempted = int.Parse(match.Groups[5].Value.Split('/')[1]);
-                statistic.ThreePoints_Made = int.Parse(match.Groups[7].Value.Split('/')[0]);
-                statistic.ThreePoints_Attempted = int.Parse(match.Groups[7].Value.Split('/')[1]);
 
-                // Free Throws
-                statistic.FreeThrows_Made = int.Parse(match.Groups[9].Value.Split('/')[0]);
-                statistic.FreeThrows_Attempted = int.Parse(match.Groups[9].Value.Split('/')[1]);
 
-                // Other Statistics
-                statistic.OffensiveRebounds = int.Parse(match.Groups[10].Value);
-                statistic.DeffensiveRebounds = int.Parse(match.Groups[11].Value);
-                statistic.Assists = int.Parse(match.Groups[12].Value);
-                statistic.Turnovers = int.Parse(match.Groups[13].Value);
-                statistic.Steals = int.Parse(match.Groups[14].Value);
-                statistic.Blocks = int.Parse(match.Groups[15].Value);
-                statistic.PersonalFaul = int.Parse(match.Groups[16].Value);
-                statistic.FaulDrawned = int.Parse(match.Groups[17].Value);
-                statistic.PlusMinus = int.Parse(match.Groups[18].Value);
-                statistic.Efficiency = int.Parse(match.Groups[19].Value);
-                statistic.Points = int.Parse(match.Groups[20].Value);
-
-                playerStatistics.Add(statistic);
             }
-
-            return playerStatistics;
+            return playerStatistic;
         }
+
+
     }
 }

@@ -29,10 +29,17 @@ $(document).ready(function () {
     $(document).on('submit', '#fileUploadForm', function (e) {
         e.preventDefault();
         var formData = new FormData(this);
+        var playerId = $('input[name="playerId"]').val();
+        var playerName = $('input[name="playerName"]').val();
 
+        formData.append("playerId", playerId);
+        formData.append("playerName", playerName);
+        
         $.ajax({
-            url: '/Player/UploadStatistic',
+
+            url: `/Player/UploadStatistic`,                                                         /*   ?playerId=${ playerId } &? playerName = ${ encodeURIComponent(playerName) }*/
             type: 'POST',
+            /*data: formData,*/
             data: formData,
             contentType: false,
             processData: false,
@@ -139,13 +146,16 @@ $(document).on('submit', '#createPlayerForm', function (e) {
 // statistic upload modal 
 $(document).on('click', '.upload-pdf-button', function (e) {
     e.preventDefault();
+    var playerId = $(this).data('player-id');
+    var playerName = $(this).data('player-name');
 
     $.ajax({
-        url: '/Player/LoadUploadModalContent', // Controller action to load the partial view
+        url: '/Player/LoadUploadModalContent',
+        data: { playerId: playerId ,playerName: playerName },
         type: 'GET',
         success: function (response) {
-            $('#uploadModalContent').html(response); // Load partial view content into modal
-            $('#uploadFileModal').modal('show'); // Show the modal
+            $('#uploadModalContent').html(response); 
+            $('#uploadFileModal').modal('show'); 
         },
         error: function (xhr, status, error) {
             console.error("Error loading upload modal content:", error);
