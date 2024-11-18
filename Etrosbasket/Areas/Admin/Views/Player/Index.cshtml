@@ -18,24 +18,24 @@
     <tbody>
         @foreach (var player in Model)
         {
-            <tr>
-                <td>@player.Name</td>
-                <td>@player.BornYear</td>
-                <td>@player.Weight</td>
-                <td>@player.Height</td>
-                <td>
-                    <!-- View Details button -->
-                    <button class="btn btn-info btn-sm details-player" data-player-id="@player.PlayerId">Details</button>
+                    <tr>
+                        <td>@player.Name</td>
+                        <td>@player.BornYear</td>
+                        <td>@player.Weight</td>
+                        <td>@player.Height</td>
+                        <td>
+                            <!-- View Details button -->
+                            <button class="btn btn-info btn-sm details-player" data-player-id="@player.PlayerId">Details</button>
 
-                    <!-- Edit button -->
-                    <a class="btn btn-primary btn-sm edit-player" id="editPlayerButton" data-player-id="@player.PlayerId">Edit</a>
+                            <!-- Edit button -->
+                            <a class="btn btn-primary btn-sm edit-player" id="editPlayerButton" data-player-id="@player.PlayerId">Edit</a>
 
-                    <!-- Delete button -->
-                    <a class="btn btn-danger btn-sm delete-player"  data-player-id="@player.PlayerId">Delete</a>
-                    <a class="btn btn-secondary btn-sm upload-pdf-button" data-player-id="@player.PlayerId" data-player-name="@player.Name">Upload PDF</a>
+                            <!-- Delete button -->
+                            <a class="btn btn-danger btn-sm delete-player"  data-player-id="@player.PlayerId">Delete</a>
+                            <a class="btn btn-secondary btn-sm upload-pdf-button" data-player-id="@player.PlayerId" data-player-name="@player.Name">Upload PDF</a>
 
-                </td>
-            </tr>
+                        </td>
+                    </tr>
         }
     </tbody>
 </table>
@@ -97,6 +97,7 @@
         </div>
     </div>
 </div>
+@* <script src="~/admin/js/adminPanel.js" asp-append-version="true"></script> *@
 
 
 

@@ -1,7 +1,9 @@
-﻿using Etrosbasket.Models;
+﻿using Etrosbasket.Data;
+using Etrosbasket.Models;
+using Etrosbasket.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Etrosbasket.Data.Services
+namespace Etrosbasket.Services.Implementations
 {
     public class PlayerStatisticService : IPlayerStatisticService
     {
@@ -25,10 +27,10 @@ namespace Etrosbasket.Data.Services
 
         public async Task<List<PlayerStatistic>> GetByPlayerId(int playerId)
         {
-            var result =  await dbContext.PlayerStatistics.Where(ps=> ps.PlayerId == playerId).ToListAsync();
+            var result = await dbContext.PlayerStatistics.Where(ps => ps.PlayerId == playerId).ToListAsync();
             return result;
         }
 
-        
+
     }
 }

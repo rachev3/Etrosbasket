@@ -1,12 +1,14 @@
 using Etrosbasket.Data;
-using Etrosbasket.Data.Services;
+using Etrosbasket.Services.Implementations;
+using Etrosbasket.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -15,6 +17,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 
+// Register custom services
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IPlayerStatisticService, PlayerStatisticService>();
 
@@ -28,20 +31,28 @@ if (app.Environment.IsDevelopment())
 else
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+    app.UseHsts(); // Enforce HTTPS in production
 }
 
+// Middleware pipeline
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseRouting();
+app.UseRouting(); // Enables routing capabilities
 
-app.UseAuthorization();
+app.UseAuthentication(); // Required if using Identity or authentication
+app.UseAuthorization();  // Adds authorization middleware
+
+// Map endpoints
+app.MapControllerRoute(
+    name: "admin",
+    pattern: "adminpanel/{controller=AdminPanel}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" });
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages();
+
+app.MapRazorPages(); // Maps Razor Pages if used
 
 app.Run();

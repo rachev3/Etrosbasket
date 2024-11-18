@@ -1,17 +1,14 @@
-﻿using Etrosbasket.Data.Services;
+﻿using Etrosbasket.Models.ViewModels;
 using Etrosbasket.Models;
-using Etrosbasket.Models.ViewModels;
-using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Parser;
+using Etrosbasket.Services.Interfaces;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
-using iText.Layout.Splitting;
+using iText.Kernel.Pdf.Canvas.Parser;
+using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using System.Text.RegularExpressions;
 
-namespace Etrosbasket.Controllers
+namespace Etrosbasket.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class PlayerController : Controller
     {
         private readonly IPlayerService playerService;
@@ -22,22 +19,22 @@ namespace Etrosbasket.Controllers
             this.playerService = playerService;
             this.playerStatisticService = playerStatisticService;
         }
-        public async Task<IActionResult> Index(int playerId)
-        {
-            var player = await playerService.GetById(playerId);
-            PlayerPageViewModel viewModel = new(player); 
-            return View(viewModel);
-        }
-        public async Task<IActionResult> Players()
+        //public async Task<IActionResult> Index(int playerId)
+        //{
+        //    var player = await playerService.GetById(playerId);
+        //    PlayerPageViewModel viewModel = new(player);
+        //    return View(viewModel);
+        //}
+        public async Task<IActionResult> Index()
         {
             var players = await playerService.GetAll();
 
-            return PartialView("~/Views/AdminPanel/_Players.cshtml", players);
+            return View("Index", players);
         }
         public IActionResult Create()
         {
 
-            return PartialView("~/Views/AdminPanel/_CreatePlayer.cshtml");
+            return PartialView("~/Views/Player/_CreatePlayer.cshtml");
         }
         public async Task<IActionResult> CreateSubmit(Player player)
         {
@@ -49,15 +46,15 @@ namespace Etrosbasket.Controllers
             return RedirectToAction("Players");
         }
         [HttpGet]
-        public async Task <IActionResult> Edit(int playerId)
+        public async Task<IActionResult> Edit(int playerId)
         {
-             var player = await playerService.GetById(playerId);
+            var player = await playerService.GetById(playerId);
             return PartialView("~/Views/AdminPanel/_EditPlayer.cshtml", player);
         }
         [HttpPost]
         public async Task<IActionResult> Edit(Player player)
         {
-          
+
 
             await playerService.Update(player.PlayerId, player);
 
@@ -75,7 +72,7 @@ namespace Etrosbasket.Controllers
         {
 
             var player = await playerService.GetById(playerId);
-            
+
 
             if (player == null)
             {
@@ -85,10 +82,18 @@ namespace Etrosbasket.Controllers
             return PartialView("~/Views/AdminPanel/_PlayerDetails.cshtml", player);
         }
 
+        [HttpPost]
         public async Task<IActionResult> Delete(int playerId)
         {
-            await playerService.Delete(playerId);
-            return RedirectToAction("Players");
+            try
+            {
+                await playerService.Delete(playerId);
+                return Json(new { success = true, message = "Player deleted successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error deleting player: {ex.Message}" });
+            }
         }
         public async Task<IActionResult> UploadStatistic(IFormFile statisticPdf, int playerId, string playerName)
         {
@@ -152,7 +157,7 @@ namespace Etrosbasket.Controllers
                               ? string.Join(" ", lines[5].Split('–')[1].Trim().Split(' ').Where(word => !int.TryParse(word, out _)))
                               : string.Join(" ", lines[5].Split('–')[0].Trim().Split(' ').Where(word => !int.TryParse(word, out _)));
 
-            
+
             playerStatistic.TeamAgainst = teamAgainst;
 
             var date = DateTime.ParseExact(lines[2].Split(',')[1].Trim().Split("Start time:")[0].Trim(), "ddd dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
@@ -186,7 +191,7 @@ namespace Etrosbasket.Controllers
                     playerStatistic.Points = int.Parse(columns[23]);
                     playerHasPlayed = true;
                 }
-              
+
 
 
             }

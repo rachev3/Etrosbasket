@@ -1,7 +1,9 @@
-﻿using Etrosbasket.Models;
+﻿using Etrosbasket.Data;
+using Etrosbasket.Models;
+using Etrosbasket.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Etrosbasket.Data.Services
+namespace Etrosbasket.Services.Implementations
 {
     public class PlayerService : IPlayerService
     {
@@ -20,7 +22,7 @@ namespace Etrosbasket.Data.Services
 
         public async Task<Player> GetById(int playerId)
         {
-            var result = await dbContext.Players.Include(x=>x.Statistics).FirstOrDefaultAsync(p=>p.PlayerId == playerId);
+            var result = await dbContext.Players.Include(x => x.Statistics).FirstOrDefaultAsync(p => p.PlayerId == playerId);
             return result;
         }
         public async Task Add(Player player)
@@ -36,7 +38,7 @@ namespace Etrosbasket.Data.Services
             return player;
         }
 
-        public async Task Delete(int id)                                           
+        public async Task Delete(int id)
         {
             var result = await dbContext.Players.FirstOrDefaultAsync(r => r.PlayerId == id);
             dbContext.Players.Remove(result);

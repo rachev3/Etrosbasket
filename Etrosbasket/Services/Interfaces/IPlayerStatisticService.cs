@@ -1,6 +1,6 @@
 ﻿using Etrosbasket.Models;
 
-namespace Etrosbasket.Data.Services
+namespace Etrosbasket.Services.Interfaces
 {
     public interface IPlayerStatisticService
     {

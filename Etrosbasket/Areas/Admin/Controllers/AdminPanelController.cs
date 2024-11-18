@@ -1,16 +1,13 @@
-﻿using Etrosbasket.Data.Services;
-using Etrosbasket.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Etrosbasket.Controllers
+namespace Etrosbasket.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class AdminPanelController : Controller
     {
-     
         public IActionResult Index()
         {
             return View();
         }
-       
     }
 }
