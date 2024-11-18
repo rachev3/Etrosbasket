@@ -1,6 +1,6 @@
 ﻿// pdf uploading logic
 $(document).ready(function () {
-    // Delegate events to document to ensure they work with dynamically loaded content
+
     $(document).on('click', '#selectFileButton', function () {
         $('#fileInput').click();
     });
@@ -21,8 +21,8 @@ $(document).ready(function () {
 
     // Discard selected file
     $(document).on('click', '#discardFileButton', function () {
-        $('#fileInput').val(''); // Clear file input
-        $('#filePreview').html('<p>No file selected.</p>'); // Reset preview
+        $('#fileInput').val('');
+        $('#filePreview').html('<p>No file selected.</p>');
     });
 
     // Handle form submission with AJAX
@@ -32,21 +32,21 @@ $(document).ready(function () {
         var playerId = $('input[name="playerId"]').val();
         var playerName = $('input[name="playerName"]').val();
 
-        formData.append("playerId", playerId);
-        formData.append("playerName", playerName);
-        
         $.ajax({
 
-            url: `/Player/UploadStatistic`,                                                         /*   ?playerId=${ playerId } &? playerName = ${ encodeURIComponent(playerName) }*/
+            url: `/Player/UploadStatistic?playerId=${playerId} &? playerName = ${encodeURIComponent(playerName)}`,                                                         /*   ?playerId=${ playerId } &? playerName = ${ encodeURIComponent(playerName) }*/
             type: 'POST',
-            /*data: formData,*/
             data: formData,
             contentType: false,
             processData: false,
             success: function (response) {
-                alert("File uploaded successfully!");
-                $('#uploadFileModal').modal('hide'); // Hide the modal on success
-                // Optionally, reload data or update UI here
+                if (response.success) {
+                    $('#uploadFileModal').modal('hide');
+                    alert(response.message);
+                } else {
+                    $('#uploadFileModal').modal('hide');
+                    alert(response.message);
+                }
             },
             error: function (xhr, status, error) {
                 console.error("Error uploading file:", error);
@@ -68,6 +68,13 @@ $(document).ready(function () {
 $(document).on('click', '.delete-player', function (e) {
     e.preventDefault();
 
+    var userConfirmed = confirm("Are you sure you want to delete this player?");
+    if (!userConfirmed) {
+        // If the user clicks "Cancel", exit the function
+        return false;
+    }
+
+    // If "OK" is clicked, proceed with deletion
     var playerId = $(this).data('player-id');
 
     $.ajax({
@@ -123,7 +130,6 @@ $(document).on('click', '#createPlayerButton', function (e) {
         }
     });
 });
-
 // create player submit
 $(document).on('submit', '#createPlayerForm', function (e) {
     e.preventDefault();
@@ -143,6 +149,55 @@ $(document).on('submit', '#createPlayerForm', function (e) {
     });
 });
 
+
+//edit player modal load
+$(document).on('click', '#editPlayerButton', function (e) {
+    e.preventDefault();
+    var playerId = $(this).data('player-id');
+    console.log(playerId)
+    $.ajax({
+        url: '/Player/Edit', // Adjust to your controller and action
+        data: { playerId: playerId },
+        type: 'GET',
+        success: function (response) {
+            $('#editModalContent').html(response); // Load form content into the modal
+            $('#editPlayerModal').modal('show'); // Show the modal
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading create player modal:", error);
+            console.log("Status:", status);
+            console.log("Response:", xhr.responseText);
+        }
+    });
+});
+
+
+$(document).on('click', '#submitPlayerForm', function (e) {
+    e.preventDefault();
+
+
+    var formData = $('#editPlayerForm').serialize();
+
+
+    $.ajax({
+        url: '/Player/Edit', // URL to the controller action
+        type: 'POST',
+        data: formData,
+        success: function (response) {
+
+            alert("Player updated successfully!");
+            $('#editPlayerModal').modal('hide');
+
+        },
+        error: function (xhr, status, error) {
+            // Handle error (e.g., show an error message)
+            alert("An error occurred: " + xhr.responseText);
+        }
+    });
+});
+
+
+
 // statistic upload modal 
 $(document).on('click', '.upload-pdf-button', function (e) {
     e.preventDefault();
@@ -151,11 +206,11 @@ $(document).on('click', '.upload-pdf-button', function (e) {
 
     $.ajax({
         url: '/Player/LoadUploadModalContent',
-        data: { playerId: playerId ,playerName: playerName },
+        data: { playerId: playerId, playerName: playerName },
         type: 'GET',
         success: function (response) {
-            $('#uploadModalContent').html(response); 
-            $('#uploadFileModal').modal('show'); 
+            $('#uploadModalContent').html(response);
+            $('#uploadFileModal').modal('show');
         },
         error: function (xhr, status, error) {
             console.error("Error loading upload modal content:", error);

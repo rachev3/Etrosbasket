@@ -54,7 +54,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var statistic in Model.Statistics)
+            @foreach (var statistic in Model.Statistics.OrderByDescending(s => s.Date))
             {
                 <tr class="table-secondary">
                     <td class="p-1">@statistic.TeamAgainst <br /> @statistic.Date.ToShortDateString()</td>

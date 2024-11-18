@@ -12,6 +12,7 @@ namespace Etrosbasket.Models
         public string TeamAgainst { get; set; }
         public DateTime Date {  get; set; }
         public TimeSpan Minutes { get; set; }
+        public string FormattedMinutes => Minutes.ToString("mm\\:ss");
 
         public int FieldGoals_Made => TwoPoints_Made + ThreePoints_Made;
         public int FieldGoals_Attempted => TwoPoints_Attempted + ThreePoints_Attempted;

@@ -10,6 +10,13 @@ namespace Etrosbasket.Data.Services
         {
             dbContext = applicationDbContext;
         }
+
+        public async Task Add(PlayerStatistic playerStatistic)
+        {
+            await dbContext.PlayerStatistics.AddAsync(playerStatistic);
+            await dbContext.SaveChangesAsync();
+        }
+
         public async Task<List<PlayerStatistic>> GetAll()
         {
             var result = await dbContext.PlayerStatistics.ToListAsync();
@@ -21,5 +28,7 @@ namespace Etrosbasket.Data.Services
             var result =  await dbContext.PlayerStatistics.Where(ps=> ps.PlayerId == playerId).ToListAsync();
             return result;
         }
+
+        
     }
 }

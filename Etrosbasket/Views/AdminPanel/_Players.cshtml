@@ -28,7 +28,7 @@
                     <button class="btn btn-info btn-sm details-player" data-player-id="@player.PlayerId">Details</button>
 
                     <!-- Edit button -->
-                    <button class="btn btn-primary btn-sm edit-player" data-id="">Edit</button>
+                    <a class="btn btn-primary btn-sm edit-player" id="editPlayerButton" data-player-id="@player.PlayerId">Edit</a>
 
                     <!-- Delete button -->
                     <a class="btn btn-danger btn-sm delete-player"  data-player-id="@player.PlayerId">Delete</a>
@@ -79,6 +79,20 @@
             </div>
             <div class="modal-body" id="uploadModalContent" style="max-height: 75vh; overflow-y: auto;">
                 <!-- Content for file upload will load here dynamically from a partial view -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editPlayerModal" tabindex="-1" aria-labelledby="editPlayerLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editPlayerLabel">Edit Playerr</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="editModalContent">
+                <!-- Form for creating a player will be loaded here dynamically -->
             </div>
         </div>
     </div>

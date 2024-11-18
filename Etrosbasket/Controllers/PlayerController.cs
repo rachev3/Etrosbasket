@@ -1,8 +1,10 @@
 ﻿using Etrosbasket.Data.Services;
 using Etrosbasket.Models;
+using Etrosbasket.Models.ViewModels;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using iText.Layout.Splitting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text;
@@ -13,14 +15,18 @@ namespace Etrosbasket.Controllers
     public class PlayerController : Controller
     {
         private readonly IPlayerService playerService;
+        private readonly IPlayerStatisticService playerStatisticService;
 
-        public PlayerController(IPlayerService playerService)
+        public PlayerController(IPlayerService playerService, IPlayerStatisticService playerStatisticService)
         {
             this.playerService = playerService;
+            this.playerStatisticService = playerStatisticService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int playerId)
         {
-            return View();
+            var player = await playerService.GetById(playerId);
+            PlayerPageViewModel viewModel = new(player); 
+            return View(viewModel);
         }
         public async Task<IActionResult> Players()
         {
@@ -33,13 +39,6 @@ namespace Etrosbasket.Controllers
 
             return PartialView("~/Views/AdminPanel/_CreatePlayer.cshtml");
         }
-        public IActionResult  LoadUploadModalContent(int playerId, string playerName)
-        {
-            ViewBag.playerId = playerId;
-            ViewBag.playerName = playerName;
-            return PartialView("~/Views/AdminPanel/_UploadStatistic.cshtml");
-        }
-
         public async Task<IActionResult> CreateSubmit(Player player)
         {
             if (ModelState.IsValid)
@@ -49,11 +48,34 @@ namespace Etrosbasket.Controllers
             }
             return RedirectToAction("Players");
         }
+        [HttpGet]
+        public async Task <IActionResult> Edit(int playerId)
+        {
+             var player = await playerService.GetById(playerId);
+            return PartialView("~/Views/AdminPanel/_EditPlayer.cshtml", player);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(Player player)
+        {
+          
+
+            await playerService.Update(player.PlayerId, player);
+
+            return PartialView("~/Views/AdminPanel/_EditPlayer.cshtml", player);
+        }
+        public IActionResult LoadUploadModalContent(int playerId, string playerName)
+        {
+            ViewBag.playerId = playerId;
+            ViewBag.playerName = playerName;
+            return PartialView("~/Views/AdminPanel/_UploadStatistic.cshtml");
+        }
+
 
         public async Task<IActionResult> Details(int playerId)
         {
 
             var player = await playerService.GetById(playerId);
+            
 
             if (player == null)
             {
@@ -70,7 +92,7 @@ namespace Etrosbasket.Controllers
         }
         public async Task<IActionResult> UploadStatistic(IFormFile statisticPdf, int playerId, string playerName)
         {
-            
+
             if (statisticPdf == null || statisticPdf.Length == 0)
             {
                 return BadRequest("Invalid PDF file.");
@@ -85,10 +107,20 @@ namespace Etrosbasket.Controllers
                 var lines = ExtractLinesFromPdf(stream);
 
                 // Parse player statistics
-                var playerStatistics = ParsePlayerStatistics(lines,playerId,playerName);
+                var playerStatistics = ParsePlayerStatistics(lines, playerId, playerName);
+                if (playerStatistics != null)
+                {
+                    await playerStatisticService.Add(playerStatistics);
+                    return Json(new { success = true, message = "Statistic uploaded successfully." });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "This statistic is already uploaded or the player has not played in this game." });
+                }
+
 
                 // Display or save player statistics
-                return View("StatisticsSummary", playerStatistics);
+                //return View("StatisticsSummary", playerStatistics);
             }
         }
 
@@ -116,21 +148,31 @@ namespace Etrosbasket.Controllers
         {
             var playerStatistic = new PlayerStatistic();
 
-               playerStatistic.TeamAgainst = lines[5].Contains("Етрос") ? lines[5].Replace("Етрос", "").Trim().Split(' ')[0] : lines[5].Split(' ')[0]; 
-               playerStatistic.Date = DateTime.ParseExact(lines[2].Split(',')[1].Trim().Split("Start time:")[0].Trim(), "ddd dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture);          // To do: extract the date
-               playerStatistic.PlayerId = playerId;
+            var teamAgainst = lines[5].Split('–')[0].Trim().Contains("Етрос")
+                              ? string.Join(" ", lines[5].Split('–')[1].Trim().Split(' ').Where(word => !int.TryParse(word, out _)))
+                              : string.Join(" ", lines[5].Split('–')[0].Trim().Split(' ').Where(word => !int.TryParse(word, out _)));
+
+            
+            playerStatistic.TeamAgainst = teamAgainst;
+
+            var date = DateTime.ParseExact(lines[2].Split(',')[1].Trim().Split("Start time:")[0].Trim(), "ddd dd MMM yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            playerStatistic.Date = date;
+
+            playerStatistic.PlayerId = playerId;
+
+            bool playerHasPlayed = false;
             foreach (var line in lines)
             {
                 if (line.ToLower().Contains(playerName.ToLower()))
                 {
                     var columns = line.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    playerStatistic.Minutes = TimeSpan.ParseExact(columns[3], "mm\\:ss", null); 
-                    playerStatistic.TwoPoints_Made = int.Parse(columns[6].Split('/')[0]); 
-                    playerStatistic.TwoPoints_Attempted = int.Parse(columns[6].Split('/')[1]); 
-                    playerStatistic.ThreePoints_Made = int.Parse(columns[8].Split('/')[0]);   
-                    playerStatistic.ThreePoints_Attempted = int.Parse(columns[8].Split('/')[1]); 
-                    playerStatistic.FreeThrows_Made = int.Parse(columns[10].Split('/')[0]); 
-                    playerStatistic.FreeThrows_Attempted = int.Parse(columns[10].Split('/')[1]);   
+                    playerStatistic.Minutes = TimeSpan.ParseExact(columns[3], "mm\\:ss", null);
+                    playerStatistic.TwoPoints_Made = int.Parse(columns[6].Split('/')[0]);
+                    playerStatistic.TwoPoints_Attempted = int.Parse(columns[6].Split('/')[1]);
+                    playerStatistic.ThreePoints_Made = int.Parse(columns[8].Split('/')[0]);
+                    playerStatistic.ThreePoints_Attempted = int.Parse(columns[8].Split('/')[1]);
+                    playerStatistic.FreeThrows_Made = int.Parse(columns[10].Split('/')[0]);
+                    playerStatistic.FreeThrows_Attempted = int.Parse(columns[10].Split('/')[1]);
                     playerStatistic.OffensiveRebounds = int.Parse(columns[12]);
                     playerStatistic.DeffensiveRebounds = int.Parse(columns[13]);
                     playerStatistic.Assists = int.Parse(columns[15]);
@@ -142,13 +184,21 @@ namespace Etrosbasket.Controllers
                     playerStatistic.PlusMinus = int.Parse(columns[21]);
                     playerStatistic.Efficiency = int.Parse(columns[22]);
                     playerStatistic.Points = int.Parse(columns[23]);
-
+                    playerHasPlayed = true;
                 }
-
+              
 
 
             }
-            return playerStatistic;
+            var statistics = playerStatisticService.GetByPlayerId(playerId).Result;
+            if (statistics.Any(s => s.TeamAgainst == teamAgainst && s.Date == date) || !playerHasPlayed)
+            {
+                return null;
+            }
+            else
+            {
+                return playerStatistic;
+            }
         }
 
 

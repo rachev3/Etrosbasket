@@ -6,5 +6,6 @@ namespace Etrosbasket.Data.Services
     {
         Task<List<PlayerStatistic>> GetAll();
         Task<List<PlayerStatistic>> GetByPlayerId(int playerId);
+        Task Add(PlayerStatistic playerStatistic);
     }
 }
