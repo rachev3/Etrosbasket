@@ -31,25 +31,30 @@ namespace Etrosbasket.Areas.Admin.Controllers
 
             return View("Index", players);
         }
+        [HttpGet]
         public IActionResult Create()
         {
 
-            return PartialView("~/Views/Player/_CreatePlayer.cshtml");
+            return PartialView("~/Areas/Admin/Views/Player/_CreatePlayer.cshtml");
         }
+        [Area("Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetPlayersTable()
+        {
+            var players = await playerService.GetAll();
+            return PartialView("_PlayersTable", players);
+        }
+        [HttpPost]
         public async Task<IActionResult> CreateSubmit(Player player)
         {
-            if (ModelState.IsValid)
-            {
-                await playerService.Add(player);
-
-            }
-            return RedirectToAction("Players");
+            await playerService.Add(player);
+            return Json(new { success = true, message = "Player created successfully!" });
         }
         [HttpGet]
         public async Task<IActionResult> Edit(int playerId)
         {
             var player = await playerService.GetById(playerId);
-            return PartialView("~/Views/AdminPanel/_EditPlayer.cshtml", player);
+            return PartialView("~/Areas/Admin/Views/Player/_EditPlayer.cshtml", player);
         }
         [HttpPost]
         public async Task<IActionResult> Edit(Player player)
@@ -58,14 +63,9 @@ namespace Etrosbasket.Areas.Admin.Controllers
 
             await playerService.Update(player.PlayerId, player);
 
-            return PartialView("~/Views/AdminPanel/_EditPlayer.cshtml", player);
+            return Json(new { success = true, message = "Player created successfully!" });
         }
-        public IActionResult LoadUploadModalContent(int playerId, string playerName)
-        {
-            ViewBag.playerId = playerId;
-            ViewBag.playerName = playerName;
-            return PartialView("~/Views/AdminPanel/_UploadStatistic.cshtml");
-        }
+      
 
 
         public async Task<IActionResult> Details(int playerId)
@@ -79,7 +79,7 @@ namespace Etrosbasket.Areas.Admin.Controllers
                 return NotFound();
             }
 
-            return PartialView("~/Views/AdminPanel/_PlayerDetails.cshtml", player);
+            return PartialView("~/Areas/Admin/Views/Player/_PlayerDetails.cshtml", player);
         }
 
         [HttpPost]
@@ -94,6 +94,16 @@ namespace Etrosbasket.Areas.Admin.Controllers
             {
                 return Json(new { success = false, message = $"Error deleting player: {ex.Message}" });
             }
+        }
+        [HttpGet]
+        public IActionResult LoadUploadModalContent(int playerId, string playerName)
+        {
+            // Pass the playerId and playerName to the view via ViewBag or a model
+            ViewBag.PlayerId = playerId;
+            ViewBag.PlayerName = playerName;
+
+            // Return the partial view
+            return PartialView("_UploadStatistic");
         }
         public async Task<IActionResult> UploadStatistic(IFormFile statisticPdf, int playerId, string playerName)
         {

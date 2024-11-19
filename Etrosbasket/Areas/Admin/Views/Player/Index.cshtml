@@ -4,41 +4,9 @@
 <!-- Button to open the Create Player modal -->
 <button type="button" class="btn btn-success" id="createPlayerButton">Add New Player</button>
 
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Born Year</th>
-            <th>Weight (kg)</th>
-            <th>Height (cm)</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var player in Model)
-        {
-                    <tr>
-                        <td>@player.Name</td>
-                        <td>@player.BornYear</td>
-                        <td>@player.Weight</td>
-                        <td>@player.Height</td>
-                        <td>
-                            <!-- View Details button -->
-                            <button class="btn btn-info btn-sm details-player" data-player-id="@player.PlayerId">Details</button>
-
-                            <!-- Edit button -->
-                            <a class="btn btn-primary btn-sm edit-player" id="editPlayerButton" data-player-id="@player.PlayerId">Edit</a>
-
-                            <!-- Delete button -->
-                            <a class="btn btn-danger btn-sm delete-player"  data-player-id="@player.PlayerId">Delete</a>
-                            <a class="btn btn-secondary btn-sm upload-pdf-button" data-player-id="@player.PlayerId" data-player-name="@player.Name">Upload PDF</a>
-
-                        </td>
-                    </tr>
-        }
-    </tbody>
-</table>
+<div id="playersTableContainer">                             
+    @await Html.PartialAsync("_PlayersTable", Model)
+</div>
 <!-- Player Details Modal Structure -->
 <div class="modal fade" id="playerDetailsModal" tabindex="-1" aria-labelledby="playerDetailsLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
@@ -47,7 +15,7 @@
                 <h5 class="modal-title" id="playerDetailsLabel">Player Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="modalContent" style="max-height: 75vh; overflow-y: auto;">
+            <div class="modal-body" id="detailsModalContent" style="max-height: 75vh; overflow-y: auto;">
                 <!-- The statistics table will load here dynamically -->
             </div>
         </div>

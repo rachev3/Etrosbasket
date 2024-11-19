@@ -12,6 +12,7 @@ namespace Etrosbasket.Data
         { }
         public DbSet<Player> Players { get; set; }
         public DbSet<PlayerStatistic> PlayerStatistics { get; set; }
+        public DbSet<Article> Articles { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
