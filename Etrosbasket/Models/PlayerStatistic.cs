@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Routing.Constraints;
+﻿using Etrosbasket.Areas.Admin.ViewModels.PlayerStatistics;
+using Microsoft.AspNetCore.Routing.Constraints;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,6 +8,34 @@ namespace Etrosbasket.Models
 {
     public class PlayerStatistic
     {
+        public PlayerStatistic()
+        {
+            
+        }
+        public PlayerStatistic(PlayerStatisticViewModel viewModel)
+        {
+            StatisticId = viewModel.StatisticId;
+            TeamAgainst = viewModel.TeamAgainst;
+            Date = viewModel.Date;
+            Minutes = TimeSpan.ParseExact(viewModel.Minutes, @"mm\:ss", null);
+            TwoPoints_Made = viewModel.TwoPoints_Made;
+            TwoPoints_Attempted = viewModel.TwoPoints_Attempted;
+            ThreePoints_Made = viewModel.ThreePoints_Made;
+            ThreePoints_Attempted = viewModel.ThreePoints_Attempted;
+            FreeThrows_Made = viewModel.FreeThrows_Made;
+            FreeThrows_Attempted = viewModel.FreeThrows_Attempted;
+            OffensiveRebounds = viewModel.OffensiveRebounds;
+            DeffensiveRebounds = viewModel.DeffensiveRebounds;
+            Assists = viewModel.Assists;
+            Turnovers = viewModel.Turnovers;
+            Steals = viewModel.Steals;
+            Blocks = viewModel.Blocks;
+            PersonalFaul = viewModel.PersonalFaul;
+            FaulDrawned = viewModel.FaulDrawned;
+            PlusMinus = viewModel.PlusMinus;
+            Efficiency = viewModel.Efficiency;
+            Points = viewModel.Points;
+        }
         [Key]
         public int StatisticId { get; set; }
         public string TeamAgainst { get; set; }

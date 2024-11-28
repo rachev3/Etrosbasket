@@ -39,11 +39,18 @@ namespace Etrosbasket.Services.Implementations
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<Player> Update(int id, Player player)
+        public async Task Update(PlayerEditViewModel viewModel)
         {
+            var player = await dbContext.Players.FirstOrDefaultAsync(p=>p.PlayerId == viewModel.PlayerId);
+            player.Name = viewModel.Name;
+            player.BornYear = viewModel.BornYear;
+            player.Weight = viewModel.Weight;
+            player.Height = viewModel.Height;
+            player.PictureURL = viewModel.PictureURL;
+            player.Statistics = viewModel.Statistics.Select(stat => new PlayerStatistic(stat)).ToList();
             dbContext.Update(player);
             await dbContext.SaveChangesAsync();
-            return player;
+          
         }
 
         public async Task Delete(int id)

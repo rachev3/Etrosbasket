@@ -6,10 +6,10 @@ namespace Etrosbasket.Services.Interfaces
     public interface IPlayerService
     {
         Task<PlayerListViewModel> GetAll();
-        Task<PlayerEditViewModel> GetPlayerEdit(int playerId);
         Task<PlayerDetailsViewModel> GetPlayerDetails(int playerId);
         Task Add(Player player);
-        Task<Player> Update(int id, Player repair);
+        Task<PlayerEditViewModel> GetPlayerEdit(int playerId);
+        Task Update(PlayerEditViewModel viewModel);
         Task Delete(int id);
 
     }

@@ -5,6 +5,7 @@ using iText.Kernel.Pdf.Canvas.Parser.Listener;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Mvc;
+using Etrosbasket.Areas.Admin.ViewModels.Players;
 
 namespace Etrosbasket.Areas.Admin.Controllers
 {
@@ -62,9 +63,9 @@ namespace Etrosbasket.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Player player)
+        public async Task<IActionResult> Edit(PlayerEditViewModel viewModel)
         {
-            await playerService.Update(player.PlayerId, player);
+            await playerService.Update(viewModel);
             return Json(new { success = true, message = "Player created successfully!" });
         }
 
