@@ -1,21 +1,21 @@
-﻿@model List<Etrosbasket.Models.Player>
+﻿@model PlayerListViewModel
 
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Name</th>
-            <th>Born Year</th>
+            <th>Age</th>
             <th>Weight (kg)</th>
             <th>Height (cm)</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var player in Model)
+        @foreach (var player in Model.PlayersList)
         {
             <tr>
                 <td>@player.Name</td>
-                <td>@player.BornYear</td>
+                <td>@player.Age</td>
                 <td>@player.Weight</td>
                 <td>@player.Height</td>
                 <td>

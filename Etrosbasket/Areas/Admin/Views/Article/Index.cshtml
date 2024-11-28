@@ -1,5 +1,9 @@
-﻿
-<div>
+﻿@model List<Article>
 
-    @await Html.PartialAsync("_CreateArticle")
+<h3>Players List</h3>
+<!-- Button to open the Create Player modal -->
+<button type="button" class="btn btn-success" id="createPlayerButton">Add New Player</button>
+
+<div id="playersTableContainer">
+    @await Html.PartialAsync("_ArticlesTable", Model)
 </div>

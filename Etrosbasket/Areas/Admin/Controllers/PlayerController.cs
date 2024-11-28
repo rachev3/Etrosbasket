@@ -19,59 +19,60 @@ namespace Etrosbasket.Areas.Admin.Controllers
             this.playerService = playerService;
             this.playerStatisticService = playerStatisticService;
         }
+
         //public async Task<IActionResult> Index(int playerId)
         //{
         //    var player = await playerService.GetById(playerId);
         //    PlayerPageViewModel viewModel = new(player);
         //    return View(viewModel);
         //}
+
         public async Task<IActionResult> Index()
         {
             var players = await playerService.GetAll();
 
             return View("Index", players);
         }
+
         [HttpGet]
         public IActionResult Create()
         {
-
             return PartialView("~/Areas/Admin/Views/Player/_CreatePlayer.cshtml");
         }
-        [Area("Admin")]
+     
         [HttpGet]
         public async Task<IActionResult> GetPlayersTable()
         {
             var players = await playerService.GetAll();
             return PartialView("_PlayersTable", players);
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateSubmit(Player player)
         {
             await playerService.Add(player);
             return Json(new { success = true, message = "Player created successfully!" });
         }
+
         [HttpGet]
         public async Task<IActionResult> Edit(int playerId)
         {
-            var player = await playerService.GetById(playerId);
+            var player = await playerService.GetPlayerEdit(playerId);
             return PartialView("~/Areas/Admin/Views/Player/_EditPlayer.cshtml", player);
         }
+
         [HttpPost]
         public async Task<IActionResult> Edit(Player player)
         {
-
-
             await playerService.Update(player.PlayerId, player);
-
             return Json(new { success = true, message = "Player created successfully!" });
         }
-      
 
-
+        [HttpGet]
         public async Task<IActionResult> Details(int playerId)
         {
 
-            var player = await playerService.GetById(playerId);
+            var player = await playerService.GetPlayerDetails(playerId);
 
 
             if (player == null)

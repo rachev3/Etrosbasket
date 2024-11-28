@@ -1,10 +1,16 @@
-﻿namespace Etrosbasket.Models.ViewModels
+﻿using Etrosbasket.Areas.Admin.ViewModels.PlayerStatistics;
+
+namespace Etrosbasket.Models.ViewModels
 {
     public class PlayerAverageStatistic
     {
-        public PlayerAverageStatistic(List<PlayerStatistic> playerStatistics)
+        public PlayerAverageStatistic(List<PlayerStatisticViewModel> playerStatistics)
         {
-            Minutes = TimeSpan.FromTicks((long)playerStatistics.Average(s => s.Minutes.Ticks)).ToString("mm\\:ss");
+            var totalTicks = playerStatistics
+       .Select(s => TimeSpan.ParseExact(s.Minutes, "mm\\:ss", null).Ticks)
+       .Average();
+
+            Minutes = TimeSpan.FromTicks((long)totalTicks).ToString("mm\\:ss");
             FieldGoals_Made = playerStatistics.Average(s => s.FieldGoals_Made);
             FieldGoals_Attempted = playerStatistics.Average(s => s.FieldGoals_Attempted);
             FieldGoalsPercentage = CalculatePercentage(FieldGoals_Made, FieldGoals_Attempted);

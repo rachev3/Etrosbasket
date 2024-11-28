@@ -2,17 +2,17 @@
 <section id="player-profile">
     <div class="container">
         <div class="player-info">
-            <img src="@Model.PictureURL" alt="Player Photo" class="player-photo-large">
+            <img src="@Model.PlayerDetails.PictureURL" alt="Player Photo" class="player-photo-large">
             <div class="player-details">
-                <h2>@Model.Name</h2>
-                <p><strong>Възраст:</strong> @Model.Age г</p>
-                <p><strong>Височина:</strong> @Model.Height см</p>
-                <p><strong>Тегло:</strong> @Model.Weight кг</p>
+                <h2>@Model.PlayerDetails.Name</h2>
+                <p><strong>Възраст:</strong> @Model.PlayerDetails.Age г</p>
+                <p><strong>Височина:</strong> @Model.PlayerDetails.Height см</p>
+                <p><strong>Тегло:</strong> @Model.PlayerDetails.Weight кг</p>
             </div>
         </div>
         <div class="player-stats">
             <h3>Средна статистика на играча</h3>
-            @if (Model.StatisticList == null || !Model.StatisticList.Any())
+            @if (Model.PlayerDetails.Statistics == null || !Model.PlayerDetails.Statistics.Any())
             {
                 <p>Няма налична статистика за този играч през сезона.</p>
             }
@@ -80,7 +80,7 @@
         </div>
         <div class="player-stats">
             <h3>Статистики през сезона</h3>
-            @if (Model.StatisticList == null || !Model.StatisticList.Any())
+            @if (Model.PlayerDetails.Statistics == null || !Model.PlayerDetails.Statistics.Any())
             {
                 <p>Няма налична статистика за този играч през сезона.</p>
             }
@@ -119,11 +119,11 @@
                         <th>PF</th>
                         <th>FD</th>
                     </tr>
-                    @foreach (var statistic in Model.StatisticList)
+                    @foreach (var statistic in Model.PlayerDetails.Statistics)
                     {
                         <tr>
                             <td>@statistic.TeamAgainst <br> @statistic.Date.ToString("dd.MM.yyyy")</td>
-                            <td>@statistic.FormattedMinutes</td>
+                            <td>@statistic.Minutes</td>
                             <td>@statistic.FieldGoals_Made/@statistic.FieldGoals_Attempted</td>
                             <td>@statistic.FieldGooalsPercentage%</td>
                             <td>@statistic.TwoPoints_Made/@statistic.TwoPoints_Attempted</td>

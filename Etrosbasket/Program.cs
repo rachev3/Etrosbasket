@@ -20,6 +20,7 @@ builder.Services.AddControllersWithViews();
 // Register custom services
 builder.Services.AddScoped<IPlayerService, PlayerService>();
 builder.Services.AddScoped<IPlayerStatisticService, PlayerStatisticService>();
+builder.Services.AddScoped<IArticleService, ArticleService>();
 
 var app = builder.Build();
 
