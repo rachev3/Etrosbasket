@@ -221,3 +221,30 @@ $(document).on('click', '.upload-pdf-button', function (e) {
     });
 });
 
+
+//deleting article button
+$(document).on('click', '.delete-article', function (e) {
+    e.preventDefault();
+
+    var userConfirmed = confirm("Are you sure you want to delete this player?");
+    if (!userConfirmed) {
+        // If the user clicks "Cancel", exit the function
+        return false;
+    }
+
+    // If "OK" is clicked, proceed with deletion
+    var playerId = $(this).data('article-id');
+
+    $.ajax({
+        url: '/adminpanel/Article/Delete',
+        type: 'POST',
+        data: { playerId: playerId },
+        success: function (response) {
+
+            $('#articlesTableContainer').load('/adminpanel/Article/GetArticlesTable');
+        },
+        error: function (xhr, status, error) {
+            console.error("Error deleting player: ", error);
+        }
+    });
+});

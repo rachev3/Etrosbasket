@@ -1,4 +1,6 @@
-﻿using Etrosbasket.Data;
+﻿using Etrosbasket.Areas.Admin.ViewModels.Articles;
+using Etrosbasket.Areas.Admin.ViewModels.Players;
+using Etrosbasket.Data;
 using Etrosbasket.Data.Migrations;
 using Etrosbasket.Models;
 using Etrosbasket.Services.Interfaces;
@@ -13,10 +15,24 @@ namespace Etrosbasket.Services.Implementations
         {
             dbContext = applicationDbContext;
         }
+        public async Task<ArticleListViewModel> GetAll()
+        {
+            var result = await dbContext.Articles.ToListAsync();
+            ArticleListViewModel viewModel = new()
+            {
+                Articles = result.Select(article => new ArticleViewModel
+                {
+                    ArticleId = article.ArticleId,
+                    Title = article.Title,
+                    CreatedDate = article.PublishDate
+                }).ToList()
+            };
+            return viewModel;
+        }
         public async Task Add(Article article)
         {
-          await dbContext.Articles.AddAsync(article);
-          await dbContext.SaveChangesAsync();
+            await dbContext.Articles.AddAsync(article);
+            await dbContext.SaveChangesAsync();
         }
 
         public async Task Delete(int id)
@@ -26,13 +42,8 @@ namespace Etrosbasket.Services.Implementations
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<List<Article>> GetAll()
-        {
-            var result = await dbContext.Articles.ToListAsync();
-            return result;
-        }
 
-        public  Task<Article> GetById(int articleId)
+        public Task<Article> GetById(int articleId)
         {
             return null;
         }

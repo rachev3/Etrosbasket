@@ -1,14 +1,21 @@
-﻿@model List<Article>
+﻿@model ArticleListViewModel
 
 <table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Title</th>
+    </thead>
     <tbody>
-        @foreach (var article in Model)
+        @foreach (var article in Model.Articles)
         {
             <tr>
+                <td>@article.FormattedCreatedDate</td>
                 <td>@article.Title</td>
-                
                 <td>
-                    
+                    <button class="btn btn-info btn-sm details-article" data-article-id="@article.ArticleId">Details</button>
+                    <a class="btn btn-primary btn-sm edit-article" id="editArticleButton" data-article-id="@article.ArticleId">Edit</a>
+                    <a class="btn btn-danger btn-sm delete-article" data-article-id="@article.ArticleId">Delete</a>
                 </td>
             </tr>
         }
