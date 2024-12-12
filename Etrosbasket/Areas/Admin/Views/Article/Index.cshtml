@@ -7,3 +7,22 @@
 <div id="articlesTableContainer">
     @await Html.PartialAsync("_ArticlesTable", Model)
 </div>
+
+<div class="modal fade" id="createArticleModal" tabindex="-1" aria-labelledby="createArticleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createArticleLabel">Create New Article</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="createModalContent">
+                <!-- Form for creating a player will be loaded here dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@* <div id="articleEditContainer">
+    @await Html.PartialAsync("_EditArticle")
+</div> *@

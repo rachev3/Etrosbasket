@@ -1,90 +1,82 @@
-﻿<div class="container-fluid py-5">
-    <div class="row">
-        <!-- Title Section -->
-        <div class="col-12 mb-4">
-            <h1 class="text-center">Create New Article</h1>
+﻿@model ArticleCreateViewModel
+
+<form id="createArticleForm" asp-action="Create" asp-controller="Article" method="post" class="col-12">
+    <div class="row mb-4">
+        <!-- Title -->
+        <div class="col-md-6">
+            <label for="title" class="form-label fw-bold">Title</label>
+            <input type="text" class="form-control" id="title" name="Title" placeholder="Enter article title" required>
         </div>
 
-        <!-- Main Form -->
-        <form id="createArticleForm" asp-action="Create" asp-controller="Article" method="post" class="col-12">
-            <div class="row mb-4">
-                <!-- Title -->
-                <div class="col-md-6">
-                    <label for="title" class="form-label fw-bold">Title</label>
-                    <input type="text" class="form-control" id="title" name="Title" placeholder="Enter article title" required>
-                </div>
+        <!-- Publish Date -->
+        <div class="col-md-6">
+            <label for="publishDate" class="form-label fw-bold">Publish Date</label>
+            <input type="datetime-local" class="form-control" id="publishDate" name="PublishDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")">
+        </div>
+    </div>
 
-                <!-- Publish Date -->
-                <div class="col-md-6">
-                    <label for="publishDate" class="form-label fw-bold">Publish Date</label>
-                    <input type="datetime-local" class="form-control" id="publishDate" name="PublishDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")">
-                </div>
-            </div>
+    <div class="row mb-4">
+        <!-- Summary -->
+        <div class="col-md-12">
+            <label for="summary" class="form-label fw-bold">Summary</label>
+            <textarea class="form-control" id="summary" name="Summary" rows="2" placeholder="Enter a brief summary"></textarea>
+        </div>
+    </div>
 
-            <div class="row mb-4">
-                <!-- Summary -->
-                <div class="col-md-12">
-                    <label for="summary" class="form-label fw-bold">Summary</label>
-                    <textarea class="form-control" id="summary" name="Summary" rows="2" placeholder="Enter a brief summary"></textarea>
-                </div>
-            </div>
+    <div class="row mb-4">
+        <!-- Content -->
+        <div class="col-md-12">
+            <label for="content" class="form-label fw-bold">Content</label>
+            <textarea class="form-control" id="content" name="Content" rows="6" placeholder="Enter the main content" required></textarea>
+        </div>
+    </div>
 
-            <div class="row mb-4">
-                <!-- Content -->
-                <div class="col-md-12">
-                    <label for="content" class="form-label fw-bold">Content</label>
-                    <textarea class="form-control" id="content" name="Content" rows="6" placeholder="Enter the main content" required></textarea>
-                </div>
-            </div>
+    <div class="row mb-4">
+        <!-- Cover Image -->
+        <div class="col-md-12">
+            <label for="coverImage" class="form-label fw-bold">Cover Image URL</label>
+            <input type="text" class="form-control" id="coverImage" name="CoverImageUrl" placeholder="Enter cover image URL" required>
+        </div>
+    </div>
 
-            <div class="row mb-4">
-                <!-- Cover Image -->
-                <div class="col-md-12">
-                    <label for="coverImage" class="form-label fw-bold">Cover Image URL</label>
-                    <input type="url" class="form-control" id="coverImage" name="CoverImageUrl" placeholder="Enter cover image URL" required>
-                </div>
-            </div>
-
-            <!-- Meta Information Accordion -->
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <div class="accordion" id="metaInfoAccordion">
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingMeta">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#metaInfoCollapse" aria-expanded="false" aria-controls="metaInfoCollapse">
-                                    SEO Information (Optional)
-                                </button>
-                            </h2>
-                            <div id="metaInfoCollapse" class="accordion-collapse collapse" aria-labelledby="headingMeta" data-bs-parent="#metaInfoAccordion">
-                                <div class="accordion-body">
-                                    <!-- Meta Title -->
-                                    <div class="mb-3">
-                                        <label for="metaTitle" class="form-label fw-bold">Meta Title</label>
-                                        <input type="text" class="form-control" id="metaTitle" name="MetaTitle" placeholder="Enter meta title">
-                                    </div>
-                                    <!-- Meta Description -->
-                                    <div class="mb-3">
-                                        <label for="metaDescription" class="form-label fw-bold">Meta Description</label>
-                                        <textarea class="form-control" id="metaDescription" name="MetaDescription" rows="3" placeholder="Enter meta description"></textarea>
-                                    </div>
-                                    <!-- Meta Keywords -->
-                                    <div class="mb-3">
-                                        <label for="metaKeywords" class="form-label fw-bold">Meta Keywords</label>
-                                        <input type="text" class="form-control" id="metaKeywords" name="MetaKeywords" placeholder="Enter meta keywords (comma-separated)">
-                                    </div>
-                                </div>
+    <!-- Meta Information Accordion -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="accordion" id="metaInfoAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingMeta">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#metaInfoCollapse" aria-expanded="false" aria-controls="metaInfoCollapse">
+                            SEO Information (Optional)
+                        </button>
+                    </h2>
+                    <div id="metaInfoCollapse" class="accordion-collapse collapse" aria-labelledby="headingMeta" data-bs-parent="#metaInfoAccordion">
+                        <div class="accordion-body">
+                            <!-- Meta Title -->
+                            <div class="mb-3">
+                                <label for="metaTitle" class="form-label fw-bold">Meta Title</label>
+                                <input type="text" class="form-control" id="metaTitle" name="MetaTitle" placeholder="Enter meta title">
+                            </div>
+                            <!-- Meta Description -->
+                            <div class="mb-3">
+                                <label for="metaDescription" class="form-label fw-bold">Meta Description</label>
+                                <textarea class="form-control" id="metaDescription" name="MetaDescription" rows="3" placeholder="Enter meta description"></textarea>
+                            </div>
+                            <!-- Meta Keywords -->
+                            <div class="mb-3">
+                                <label for="metaKeywords" class="form-label fw-bold">Meta Keywords</label>
+                                <input type="text" class="form-control" id="metaKeywords" name="MetaKeywords" placeholder="Enter meta keywords (comma-separated)">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Submit Button -->
-            <div class="row">
-                <div class="col-12 text-center">
-                    <button type="submit" class="btn btn-success btn-lg">Create Article</button>
-                </div>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
+
+    <!-- Submit Button -->
+    <div class="row">
+        <div class="col-12 text-center">
+            <button type="submit" class="btn btn-success btn-lg">Create Article</button>
+        </div>
+    </div>
+</form>

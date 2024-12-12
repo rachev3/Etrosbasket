@@ -7,8 +7,8 @@ namespace Etrosbasket.Services.Interfaces
     {
        
         Task<ArticleListViewModel> GetAll();
-        Task<Article> GetById(int articleId);
-        Task Add(Article article);
+        Task<ArticleEditViewModel> GetById(int articleId);
+        Task Add(ArticleCreateViewModel article);
         Task<Article> Update(int id, Article article);
         Task Delete(int id);
     }

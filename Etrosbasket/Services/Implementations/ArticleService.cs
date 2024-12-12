@@ -29,8 +29,19 @@ namespace Etrosbasket.Services.Implementations
             };
             return viewModel;
         }
-        public async Task Add(Article article)
+        public async Task Add(ArticleCreateViewModel viewModel)
         {
+            Article article =  new Article();
+            article.Title = viewModel.Title;
+            article.Content = viewModel.Content;
+            article.Summary = viewModel.Summary;
+            article.CoverImageUrl = viewModel.CoverImageUrl;
+            article.AdditionalImages = viewModel.AdditionalImages;
+            article.PublishDate = viewModel.PublishDate;
+            article.MetaTitle = viewModel.MetaTitle;
+            article.MetaDescription = viewModel.MetaDescription;
+            article.MetaKeywords = viewModel.MetaKeywords;
+
             await dbContext.Articles.AddAsync(article);
             await dbContext.SaveChangesAsync();
         }
@@ -43,9 +54,22 @@ namespace Etrosbasket.Services.Implementations
         }
 
 
-        public Task<Article> GetById(int articleId)
+        public async Task<ArticleEditViewModel> GetById(int articleId)
         {
-            return null;
+            var result = await dbContext.Articles.FirstOrDefaultAsync(r => r.ArticleId == articleId);
+            ArticleEditViewModel viewModel = new()
+            {
+                ArticleId = result.ArticleId,
+                Title = result.Title,
+                Content = result.Content,
+                Summary = result.Summary,
+                PublishDate = result.PublishDate,
+                MetaTitle = result.MetaTitle,
+                MetaDescription = result.MetaDescription,
+                MetaKeywords = result.MetaKeywords
+            };
+
+            return viewModel;
         }
 
         public Task<Article> Update(int id, Article article)

@@ -14,7 +14,8 @@
                 <td>@article.Title</td>
                 <td>
                     <button class="btn btn-info btn-sm details-article" data-article-id="@article.ArticleId">Details</button>
-                    <a class="btn btn-primary btn-sm edit-article" id="editArticleButton" data-article-id="@article.ArticleId">Edit</a>
+                    <a class="btn btn-primary btn-sm edit-player" asp-area="Admin" asp-controller="Article" asp-action="Edit" asp-route-articleId="@article.ArticleId">Edit</a>
+                   
                     <a class="btn btn-danger btn-sm delete-article" data-article-id="@article.ArticleId">Delete</a>
                 </td>
             </tr>

@@ -1,4 +1,6 @@
-﻿using Etrosbasket.Services.Implementations;
+﻿using Etrosbasket.Areas.Admin.ViewModels.Articles;
+using Etrosbasket.Models;
+using Etrosbasket.Services.Implementations;
 using Etrosbasket.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing.Text;
@@ -25,6 +27,24 @@ namespace Etrosbasket.Areas.Admin.Controllers
             var players = await articleService.GetAll();
             return PartialView("_ArticlesTable", players);
         }
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return PartialView("~/Areas/Admin/Views/Article/_CreateArticle.cshtml");
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateSubmit(ArticleCreateViewModel article)
+        {
+            await articleService.Add(article);
+            return Json(new { success = true, message = "Player created successfully!" });
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int articleId)
+        {
+            var viewModel = await articleService.GetById(articleId);
+            return PartialView("~/Areas/Admin/Views/Article/_EditArticle.cshtml", viewModel);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Delete(int playerId)
         {
@@ -38,9 +58,6 @@ namespace Etrosbasket.Areas.Admin.Controllers
                 return Json(new { success = false, message = $"Error deleting player: {ex.Message}" });
             }
         }
-        public IActionResult Create()
-        {
-            return PartialView("~/Areas/Admin/Views/Article/_CreateArticle.cshtml");
-        }
+     
     }
 }

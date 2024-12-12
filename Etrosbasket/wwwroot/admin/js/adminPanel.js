@@ -248,3 +248,47 @@ $(document).on('click', '.delete-article', function (e) {
         }
     });
 });
+
+//create article modal load
+$(document).on('click', '#createArticleButton', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: '/adminpanel/Article/Create', // Adjust to your controller and action
+        type: 'GET',
+        success: function (response) {
+            $('#createModalContent').html(response); // Load form content into the modal
+            $('#createArticleModal').modal('show'); // Show the modal
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading create player modal:", error);
+            console.log("Status:", status);
+            console.log("Response:", xhr.responseText);
+        }
+    });
+});
+// create article submit
+$(document).on('submit', '#createArticleForm', function (e) {
+    e.preventDefault();
+
+    $.ajax({
+        url: '/adminpanel/Article/CreateSubmit', // Adjust to the correct action and controller
+        type: 'POST',
+        data: $(this).serialize(),
+        success: function (response) {
+            if (response.success) {
+                $('#createArticleModal').modal('hide'); // Close modal
+                $('.modal-backdrop').remove(); // Remove backdrop
+
+                // Reload only the table
+                $('#articlesTableContainer').load('/adminpanel/Article/GetArticlesTable');
+
+            } else {
+                alert(response.message); // Show error message
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error creating player:", error);
+        }
+    });
+});

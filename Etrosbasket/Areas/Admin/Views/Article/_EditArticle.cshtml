@@ -1,0 +1,64 @@
+﻿@model ArticleEditViewModel
+
+<div class="container bg-light rounded p-4 mt-4 shadow">
+    <h2 class="mb-4 text-center">Edit Article</h2>
+    <form asp-area="Admin" asp-controller="Article" asp-action="Edit" method="post" novalidate>
+        <input type="hidden" asp-for="ArticleId" />
+
+        <!-- Title and Publish Date -->
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <label asp-for="Title" class="form-label fw-bold">Title</label>
+                <input asp-for="Title" class="form-control" placeholder="Enter article title" />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="PublishDate" class="form-label fw-bold">Publish Date</label>
+                <input asp-for="PublishDate" class="form-control" type="datetime-local" />
+                <span asp-validation-for="PublishDate" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="mb-3">
+            <label asp-for="Content" class="form-label fw-bold">Content</label>
+            <textarea asp-for="Content" class="form-control" rows="8" placeholder="Write the article content here..."></textarea>
+            <span asp-validation-for="Content" class="text-danger small"></span>
+        </div>
+
+        <!-- Summary -->
+        <div class="mb-3">
+            <label asp-for="Summary" class="form-label fw-bold">Summary</label>
+            <textarea asp-for="Summary" class="form-control" rows="4" placeholder="Provide a short summary..."></textarea>
+            <span asp-validation-for="Summary" class="text-danger small"></span>
+        </div>
+
+        <!-- SEO Metadata -->
+        <div class="border rounded p-3 mb-3">
+            <h5 class="text-primary mb-3">SEO Metadata</h5>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MetaTitle" class="form-label">Meta Title</label>
+                    <input asp-for="MetaTitle" class="form-control" placeholder="Enter meta title for SEO" />
+                    <span asp-validation-for="MetaTitle" class="text-danger small"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="MetaKeywords" class="form-label">Meta Keywords</label>
+                    <input asp-for="MetaKeywords" class="form-control" placeholder="Enter keywords (comma-separated)" />
+                    <span asp-validation-for="MetaKeywords" class="text-danger small"></span>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label asp-for="MetaDescription" class="form-label">Meta Description</label>
+                <textarea asp-for="MetaDescription" class="form-control" rows="3" placeholder="Enter a brief description for SEO..."></textarea>
+                <span asp-validation-for="MetaDescription" class="text-danger small"></span>
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+            <a asp-area="Admin" asp-controller="Article" asp-action="Index" class="btn btn-secondary px-4">Cancel</a>
+        </div>
+    </form>
+</div>
