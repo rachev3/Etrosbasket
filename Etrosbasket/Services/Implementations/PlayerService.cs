@@ -3,6 +3,7 @@ using Etrosbasket.Areas.Admin.ViewModels.PlayerStatistics;
 using Etrosbasket.Data;
 using Etrosbasket.Models;
 using Etrosbasket.Services.Interfaces;
+using Etrosbasket.ViewModels.Home;
 using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,9 @@ namespace Etrosbasket.Services.Implementations
             viewModel.PlayersList = result.Select(player => new PlayerViewModel
             {
                 PlayerId = player.PlayerId,
+                Number = player.Number,
                 Name = player.Name,
+                Positions = player.Positions,
                 Age =  DateTime.Now.Year - int.Parse(player.BornYear),
                 Weight = player.Weight,
                 Height = player.Height,
@@ -43,6 +46,9 @@ namespace Etrosbasket.Services.Implementations
         {
             var player = await dbContext.Players.FirstOrDefaultAsync(p=>p.PlayerId == viewModel.PlayerId);
             player.Name = viewModel.Name;
+            player.Positions = viewModel.Positions;
+            player.Number = viewModel.Number;
+            player.IsStartingFive = viewModel.IsStartingFive;
             player.BornYear = viewModel.BornYear;
             player.Weight = viewModel.Weight;
             player.Height = viewModel.Height;
@@ -66,7 +72,9 @@ namespace Etrosbasket.Services.Implementations
 
             PlayerDetailsViewModel viewModel = new();
             viewModel.PlayerId = playerId;
+            viewModel.Number = player.Number;
             viewModel.Name = player.Name;
+            viewModel.Positions = player.Positions;
             viewModel.Age = DateTime.Now.Year - int.Parse(player.BornYear);
             viewModel.Weight = player.Weight;
             viewModel.Height = player.Height;
@@ -82,7 +90,10 @@ namespace Etrosbasket.Services.Implementations
 
             PlayerEditViewModel viewModel = new();
             viewModel.PlayerId = result.PlayerId;
+            viewModel.Number = result.Number;
             viewModel.Name = result.Name;
+            viewModel.IsStartingFive = result.IsStartingFive;
+            viewModel.Positions = result.Positions;
             viewModel.BornYear = result.BornYear;
             viewModel.Weight = result.Weight;
             viewModel.Height = result.Height;
@@ -91,5 +102,24 @@ namespace Etrosbasket.Services.Implementations
 
             return viewModel;
         }
+
+        public async Task<List<PlayerHome>> GetStartingFive()
+        {
+           
+            var players = await dbContext.Players
+                .Where(p => p.IsStartingFive) 
+                .OrderBy(p => p.Number) 
+                .Select(p => new PlayerHome
+                {
+                    Id = p.PlayerId,
+                    Name = p.Name,
+                    Positions = p.Positions, 
+                  
+                })
+                .ToListAsync();
+
+            return players;
+        }
+
     }
 }

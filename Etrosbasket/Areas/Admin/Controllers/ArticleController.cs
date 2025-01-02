@@ -2,12 +2,14 @@
 using Etrosbasket.Models;
 using Etrosbasket.Services.Implementations;
 using Etrosbasket.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing.Text;
 
 namespace Etrosbasket.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class ArticleController : Controller
     {
         private readonly IArticleService articleService;
@@ -42,7 +44,13 @@ namespace Etrosbasket.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(int articleId)
         {
             var viewModel = await articleService.GetById(articleId);
-            return PartialView("~/Areas/Admin/Views/Article/_EditArticle.cshtml", viewModel);
+            return View("~/Areas/Admin/Views/Article/EditArticle.cshtml", viewModel);
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditSave(ArticleEditViewModel viewModel)
+        {
+            await articleService.Update(viewModel);
+            return RedirectToAction("Index");
         }
 
         [HttpPost]

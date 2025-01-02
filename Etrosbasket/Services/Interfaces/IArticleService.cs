@@ -1,5 +1,6 @@
 ﻿using Etrosbasket.Areas.Admin.ViewModels.Articles;
 using Etrosbasket.Models;
+using Etrosbasket.ViewModels.Home;
 
 namespace Etrosbasket.Services.Interfaces
 {
@@ -7,9 +8,11 @@ namespace Etrosbasket.Services.Interfaces
     {
        
         Task<ArticleListViewModel> GetAll();
+        Task<List<ArticleHome>> GetTopTwoArticlesForHome();
+
         Task<ArticleEditViewModel> GetById(int articleId);
         Task Add(ArticleCreateViewModel article);
-        Task<Article> Update(int id, Article article);
+        Task Update(ArticleEditViewModel viewModel);
         Task Delete(int id);
     }
 }

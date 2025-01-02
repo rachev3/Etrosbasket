@@ -1,9 +1,36 @@
-﻿
+﻿@using Etrosbasket.Data.Enums
+
 <form id="createPlayerForm">
     <div class="mb-3">
         <label for="playerName" class="form-label">Name</label>
         <input type="text" class="form-control" id="playerName" name="Name" required>
     </div>
+    <div class="mb-3">
+        <label for="number" class="form-label">Number</label>
+        <input type="number" class="form-control" id="number" name="Number" required>
+    </div>
+    <div class="mb-3">
+        <label for="PlayerPositions" class="form-label fw-bold">Позиции</label>
+        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+            @foreach (var value in Enum.GetValues(typeof(PlayerPosition)))
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="position_@value" name="PlayerPositions" value="@value">
+                    <label class="form-check-label" for="position_@value">
+                        @value
+                    </label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="isStartingFive" name="IsStartingFive">
+        <label class="form-check-label fw-bold" for="isStartingFive">
+            Is Starting Five
+        </label>
+    </div>
+
     <div class="mb-3">                                                               
         <label for="bornYear" class="form-label">Born Year</label>
         <input type="text" class="form-control" id="bornYear" name="BornYear" required>

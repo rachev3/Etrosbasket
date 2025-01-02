@@ -4,6 +4,7 @@ using Etrosbasket.Data;
 using Etrosbasket.Data.Migrations;
 using Etrosbasket.Models;
 using Etrosbasket.Services.Interfaces;
+using Etrosbasket.ViewModels.Home;
 using Microsoft.EntityFrameworkCore;
 
 namespace Etrosbasket.Services.Implementations
@@ -31,7 +32,7 @@ namespace Etrosbasket.Services.Implementations
         }
         public async Task Add(ArticleCreateViewModel viewModel)
         {
-            Article article =  new Article();
+            Article article = new Article();
             article.Title = viewModel.Title;
             article.Content = viewModel.Content;
             article.Summary = viewModel.Summary;
@@ -63,6 +64,8 @@ namespace Etrosbasket.Services.Implementations
                 Title = result.Title,
                 Content = result.Content,
                 Summary = result.Summary,
+                CoverImageUrl = result.CoverImageUrl,
+                AdditionalImages = result.AdditionalImages,
                 PublishDate = result.PublishDate,
                 MetaTitle = result.MetaTitle,
                 MetaDescription = result.MetaDescription,
@@ -72,9 +75,40 @@ namespace Etrosbasket.Services.Implementations
             return viewModel;
         }
 
-        public Task<Article> Update(int id, Article article)
+        public async Task Update(ArticleEditViewModel viewModel)
         {
-            throw new NotImplementedException();
+            var result = await dbContext.Articles.FirstOrDefaultAsync(r => r.ArticleId == viewModel.ArticleId);
+            result.Title = viewModel.Title;
+            result.Content = viewModel.Content;
+            result.Summary = viewModel.Summary;
+            result.CoverImageUrl = viewModel.CoverImageUrl;
+            result.AdditionalImages = viewModel.AdditionalImages;
+            result.PublishDate = viewModel.PublishDate;
+            result.MetaTitle = viewModel.MetaTitle;
+            result.MetaDescription = viewModel.MetaDescription;
+            result.MetaKeywords = viewModel.MetaKeywords;
+
+            dbContext.Update(result);
+            await dbContext.SaveChangesAsync();
         }
+
+        public async Task<List<ArticleHome>> GetTopTwoArticlesForHome()
+        {
+            
+            var articles = await dbContext.Articles
+                .OrderByDescending(a => a.PublishDate) 
+                .Take(2)                                
+                .Select(a => new ArticleHome
+                {
+                    Id = a.ArticleId,
+                    Title = a.Title,
+                    Summary = a.Summary,
+                    PublishDate = a.PublishDate
+                })
+                .ToListAsync(); 
+
+            return articles;
+        }
+
     }
 }

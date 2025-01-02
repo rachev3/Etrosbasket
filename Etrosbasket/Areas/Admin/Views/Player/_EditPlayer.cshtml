@@ -1,4 +1,5 @@
-﻿@model PlayerEditViewModel
+﻿
+@model PlayerEditViewModel
 
 <form id="editPlayerForm">
     <input type="hidden" asp-for="PlayerId" />
@@ -9,6 +10,34 @@
         <input asp-for="Name" class="form-control" id="playerName" name="Name" required>
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
+    <div class="mb-3">
+        <label asp-for="Number" class="form-label"></label>
+        <input asp-for="Number" class="form-control" id="playerNumber" name="Number" type="number" required>
+        <span asp-validation-for="Number" class="text-danger"></span>
+    </div>
+
+    <!-- Player Positions -->
+    <div class="mb-3">
+        <label class="form-label fw-bold">Player Positions</label>
+        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+            @foreach (PlayerPosition value in Enum.GetValues(typeof(PlayerPosition)).Cast<PlayerPosition>())
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="position_@value" name="Positions" value="@value"
+                    @(Model.Positions.Contains(value) ? "checked" : "")>
+                    <label class="form-check-label" for="position_@value">@value</label>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="form-check mb-3">
+        <input class="form-check-input" type="checkbox" id="isStartingFive" asp-for="IsStartingFive">
+        <label class="form-check-label fw-bold" for="isStartingFive">
+            Is Starting Five
+        </label>
+    </div>
+    
     <div class="mb-3">
         <label asp-for="BornYear" class="form-label"></label>
         <input asp-for="BornYear" class="form-control" id="bornYear" name="BornYear" required>

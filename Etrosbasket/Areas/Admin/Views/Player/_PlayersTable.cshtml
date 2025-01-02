@@ -3,7 +3,9 @@
 <table class="table table-striped">
     <thead>
         <tr>
+            <th>Number</th>
             <th>Name</th>
+            <th>Positions</th>
             <th>Age</th>
             <th>Weight (kg)</th>
             <th>Height (cm)</th>
@@ -14,7 +16,9 @@
         @foreach (var player in Model.PlayersList)
         {
             <tr>
+                <td>@player.Number</td>
                 <td>@player.Name</td>
+                <td>@string.Join("/", player.Positions)</td>
                 <td>@player.Age</td>
                 <td>@player.Weight</td>
                 <td>@player.Height</td>

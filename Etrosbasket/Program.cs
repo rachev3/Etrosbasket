@@ -13,9 +13,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Account/Login";  // Redirect unauthenticated users to login
+    options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect unauthorized users
+});
+
 
 // Register custom services
 builder.Services.AddScoped<IPlayerService, PlayerService>();
@@ -43,6 +51,16 @@ app.UseRouting(); // Enables routing capabilities
 
 app.UseAuthentication(); // Required if using Identity or authentication
 app.UseAuthorization();  // Adds authorization middleware
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+
+    await AdminSeeder.Initialize(userManager, roleManager);
+}
+
 
 // Map endpoints
 app.MapControllerRoute(

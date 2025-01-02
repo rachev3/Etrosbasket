@@ -1,4 +1,4 @@
-﻿using Etrosbasket.Models.ViewModels;
+﻿
 using Etrosbasket.Models;
 using Etrosbasket.Services.Interfaces;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
@@ -6,10 +6,12 @@ using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf;
 using Microsoft.AspNetCore.Mvc;
 using Etrosbasket.Areas.Admin.ViewModels.Players;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Etrosbasket.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")]
     public class PlayerController : Controller
     {
         private readonly IPlayerService playerService;
@@ -21,9 +23,9 @@ namespace Etrosbasket.Areas.Admin.Controllers
             this.playerStatisticService = playerStatisticService;
         }
 
-        //public async Task<IActionResult> Index(int playerId)
+        //public async Task<IActionResult> Main(int playerId)
         //{
-        //    var player = await playerService.GetById(playerId);
+        //    var player = await playerService.(playerId);
         //    PlayerPageViewModel viewModel = new(player);
         //    return View(viewModel);
         //}
